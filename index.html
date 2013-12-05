@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<head>
+<title>Secret Nemesis Gamepad Project</title>
+<script
+<script type="text/javascript">
+
+	var gamePad = {
+
+		place: null,
+		ticking: false,
+		device: false,
+
+		isSupported: function () {
+			var gamepadSupportAvailable = !!navigator.webkitGetGamepads || !!navigator.webkitGamepads;
+			return gamepadSupportAvailable;
+		},
+
+		start: function () {
+			this.place = document.getElementById('output');
+			if (this.isSupported()) {
+				this.place.innerHTML = this.place.innerHTML + '<br>SUPP!';
+				this.startPolling();
+			}
+			else {
+				this.place.innerHTML = 'GAMEPAD NOT SUPPORTED';
+			}
+		},
+
+		startPolling: function () {
+			if (!this.ticking) {
+				this.ticking = true;
+				this.tick();
+			}
+		},
+
+		stopPolling: function () {
+			this.ticking = false;
+		},
+
+		scheduleNextTick: function () {
+			if (this.ticking) {
+				if (window.requestAnimationFrame) {
+					window.requestAnimationFrame(this.tick);
+				}
+				else if (window.mozRequestAnimationFrame) {
+					window.mozRequestAnimationFrame(this.tick);
+				}
+				else if (window.webkitRequestAnimationFrame) {
+					window.webkitRequestAnimationFrame(this.tick);
+				}
+			}
+		},
+
+		pollStatus: function () {
+
+			this.place.innerHTML = 'CHECKING FOR GAMEPAD';
+			if (navigator.webkitGetGamepads()) {
+				this.device = navigator.webkitGetGamepads()[0];
+				if (this.device) {
+					this.place.innerHTML = 'GAMEPAD CONNECTED';
+					this.stopPolling();
+					console.log()
+				}
+			}
+		},
+
+		tick: function () {
+			gamePad.pollStatus();
+			gamePad.scheduleNextTick();
+		},
+
+	}
+
+</script>
+</head>
+<body>
+
+Meh.
+<div id="output"></div>
+<div id="letter"></div>
+
+<script type="text/javascript">
+		gamePad.start();
+
+		window.addEventListener('keydown', function (e) {
+			console.log(e);
+		});
+
+
+</script>
+</body>
+</html>
