@@ -4,7 +4,7 @@
 chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
     switch(request.type) {
         case "toggleController":
-            toggleController(request.status);
+            toggleController();
         break;
     }
     return true;
@@ -34,8 +34,8 @@ var isGamepadConnected = function() {
 // send a message to the content script
 var toggleController = function() {
     if(isGamepadConnected()) {
-        console.log('true', isGamepadConnected());
         chrome.tabs.getSelected(null, function(tab){
+            chrome.tabs.sendMessage(tab.id, {type: "toggleController"});
             // setting icon
             chrome.browserAction.setIcon({
                 path: "images/38x38-on.png",
@@ -58,6 +58,8 @@ var toggleController = function() {
     }
 }
 
+
+
 // tell content script to update icon
 /*
 chrome.runtime.onMessage.addListener(
@@ -68,4 +70,14 @@ chrome.runtime.onMessage.addListener(
             tabId: sender.tab.id
         });
     });
+chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
+    switch(request.type) {
+        case "dom-loaded":
+            alert(request.data.myProperty);
+        break;
+    }
+    return true;
+});
+*
 */
+
