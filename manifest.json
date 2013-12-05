@@ -1,0 +1,23 @@
+{
+    "name": "secretNemesis",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "browser_action": {
+        "default_icon": {
+            "19": "images/19x19.png",
+            "38": "images/38x38.png"
+        },
+        "default_title": "Enable Controller",
+        "default_popup": "popup.html"
+    }
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    }
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["content.js"]
+        }
+    ]
+}
