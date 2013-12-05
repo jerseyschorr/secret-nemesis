@@ -6,10 +6,10 @@ class Gamepad
         UP: 38
         RIGHT: 39
         DOWN: 40
-        BUTTON_A: 88
-        BUTTON_B: 90
+        BUTTON_A: 13
+        BUTTON_B: 65
         SELECT: 32
-        START: 13
+        START: 83
 
     BUTTONS:
         BUTTON_A: 0                   #Face (main) buttons
@@ -47,12 +47,12 @@ class Gamepad
         gamepadSupportAvailable = (navigator.webkitGetGamepads or navigator.webkitGamepads)
 
     start: () ->
-        @place = document.getElementById('output')
+        #@place = document.getElementById('output')
         if @isSupported() 
-            @place.innerHTML = @place.innerHTML + '<br>SUPP!'
+            #@place.innerHTML = @place.innerHTML + '<br>SUPP!'
             @startPolling()
         else
-            @place.innerHTML = 'GAMEPAD NOT SUPPORTED'
+            #@place.innerHTML = 'GAMEPAD NOT SUPPORTED'
 
     startPolling: () ->
         if not @ticking
@@ -70,11 +70,11 @@ class Gamepad
 
     pollStatus: () ->
 
-        @place.innerHTML = 'CHECKING FOR GAMEPAD'
+        #@place.innerHTML = 'CHECKING FOR GAMEPAD'
         if navigator.webkitGetGamepads()
             gamepad = navigator.webkitGetGamepads()[0]
             if gamepad
-                @place.innerHTML = 'GAMEPAD CONNECTED'
+                #@place.innerHTML = 'GAMEPAD CONNECTED'
                 if gamepad.timestamp != @prevTimestamp
                     @prevTimestamps = gamepad.timestamp
                     @detectDeviceEvent(gamepad)
@@ -109,19 +109,16 @@ class Gamepad
     fireEvent: (eventName) ->
 
         console.log eventName
-
         if eventName of @KEYMAP
-            evt = $.Event 'keydown',
-                keyCode: @KEYMAP[eventName]
-            console.log evt
-            $("#testarea").trigger(evt)
-
-
+            jQuery.event.trigger({ type: 'keydown', which: @KEYMAP[eventName], keyCode: @KEYMAP[eventName], charCode: @KEYMAP[eventName] })
+            jQuery.event.trigger({ type: 'keyup', which: @KEYMAP[eventName], keyCode: @KEYMAP[eventName], charCode: @KEYMAP[eventName] })
+        return true
 
 gp = new Gamepad
 
 gp.start()
 
-window.addEventListener('keydown', (e) ->
-    console.log e
+$('body').keyup((e) ->
+   console.log 'keyup triggered. ', e
 )
+
