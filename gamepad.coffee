@@ -2,14 +2,14 @@
 class Gamepad
 
     KEYMAP:
-        LEFT: left
-        RIGHT: right
-        UP: up
-        DOWN: down
-        BUTTON_A: x
-        BUTTON_B: z
-        SELECT: space
-        START: enter
+        LEFT: 37
+        UP: 38
+        RIGHT: 39
+        DOWN: 40
+        BUTTON_A: 88
+        BUTTON_B: 90
+        SELECT: 32
+        START: 13
 
     BUTTONS:
         BUTTON_A: 0                   #Face (main) buttons
@@ -110,27 +110,12 @@ class Gamepad
 
         console.log eventName
 
-        if eventName
-var e = $.Event('keypress', { keyCode: 102 } );
+        if eventName of @KEYMAP
+            evt = $.Event 'keydown',
+                keyCode: @KEYMAP[eventName]
+            console.log evt
+            $("#testarea").trigger(evt)
 
-        event = new CustomEvent("KeyboardEvent", true, true,
-
-            detail:
-                hazcheeseburger: true
-
-        event.initKeyEvent (type, bubbles, cancelable, viewArg, 
-                        ctrlKeyArg, altKeyArg, shiftKeyArg, metaKeyArg, 
-                        keyCodeArg, charCodeArg) 
-
-        event.initKeyEvent (type, bubbles, cancelable, viewArg, 
-                        ctrlKeyArg, altKeyArg, shiftKeyArg, metaKeyArg, 
-                        keyCodeArg, charCodeArg) 
-
-
-        var my_event = new CustomEvent('NewEventName');
-    var my_element = document.getElementById('TargetElement');
-    my_element.dispatchEvent(my_event);
-obj.dispatchEvent(event);
 
 
 gp = new Gamepad
