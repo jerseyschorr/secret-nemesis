@@ -1,0 +1,31 @@
+{
+    "name": "Secret Nemesis",
+    "version": "0.0.1",
+    "manifest_version": 2,
+    "description" : "Description ...",
+    "icons": { "16": "images/16x16.png", "48": "images/48x48.png", "128": "images/128x128.png" },
+    "browser_action": {
+        "default_icon": {
+            "19": "images/19x19.png",
+            "38": "images/38x38.png"
+        },
+        "default_title": "Enable Controller",
+        "default_popup": "popup.html"
+    },
+    "background": {
+        "scripts": ["background.js"],
+        "persistent": false
+    },
+    "content_scripts": [
+        {
+            "matches": ["http://*/*", "https://*/*"],
+            "js": ["jquery-1.10.2.min.js", "content.js"]
+        }
+    ],
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "bookmarks",
+      "unlimitedStorage"
+    ]
+}
