@@ -12,72 +12,36 @@ chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
 
 var status = false;
 var isGamepadConnected = function() {
-    /*
-    console.log('window.status: '+window.status);
-    if(window.status) {
-        window.status = false;
-    } else {
-        window.status = true;
-    }
-    console.log('window.status: '+window.status);
-    console.log('status'+status);
-    if(status === true) {
-        status = false;
-    } else {
-        status = true;
-    }
-    console.log('status'+status);
-    */
+    // Place gamepad detection code here.
+    // Returns true for now.
     return true;
 };
 
 // send a message to the content script
 var toggleController = function() {
     if(isGamepadConnected()) {
-        chrome.tabs.getSelected(null, function(tab){
-            chrome.tabs.sendMessage(tab.id, {type: "toggleController"});
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            chrome.tabs.sendMessage(tabs[0].id, {type: "toggleController"}, function(response) {
+                console.log('done');
+            });
             // setting icon
             chrome.browserAction.setIcon({
                 path: "images/38x38-on.png",
-                tabId: tab.id
+                tabId: tabs[0].id
             });
             // setting a badge
             chrome.browserAction.setBadgeText({text: "1up"});
         });
     } else {
         console.log('false');
-        chrome.tabs.getSelected(null, function(tab){
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             // setting icon
             chrome.browserAction.setIcon({
                 path: "images/38x38.png",
-                tabId: tab.id
+                tabId: tabs[0].id
             });
             // setting a badge
             chrome.browserAction.setBadgeText({text: ""});
         });
     }
 }
-
-
-
-// tell content script to update icon
-/*
-chrome.runtime.onMessage.addListener(
-    function(request, sender, sendResponse) {
-        // read `newIconPath` from request and read `tab.id` from sender
-        chrome.browserAction.setIcon({
-            path: request.newIconPath,
-            tabId: sender.tab.id
-        });
-    });
-chrome.extension.onMessage.addListener(function(request, sender, sendResponse) {
-    switch(request.type) {
-        case "dom-loaded":
-            alert(request.data.myProperty);
-        break;
-    }
-    return true;
-});
-*
-*/
-

@@ -19,7 +19,13 @@
     "content_scripts": [
         {
             "matches": ["http://*/*", "https://*/*"],
-            "js": ["content.js"]
+            "js": ["jquery-1.10.2.min.js", "content.js"]
         }
+    ],
+    "permissions": [
+      "tabs",
+      "activeTab",
+      "bookmarks",
+      "unlimitedStorage"
     ]
 }
