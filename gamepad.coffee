@@ -109,16 +109,78 @@ class Gamepad
     fireEvent: (eventName) ->
 
         console.log eventName
-        if eventName of @KEYMAP
-            jQuery.event.trigger({ type: 'keydown', which: @KEYMAP[eventName], keyCode: @KEYMAP[eventName], charCode: @KEYMAP[eventName] })
-            jQuery.event.trigger({ type: 'keyup', which: @KEYMAP[eventName], keyCode: @KEYMAP[eventName], charCode: @KEYMAP[eventName] })
+        k = @KEYMAP[eventName]
+        if k
+            @triggerKeyEvent(document.body, k)
+            ###
+            oEvent = document.createEvent('KeyboardEvent')
+            if oEvent.initKeyboardEvent
+                oEvent.initKeyboardEvent("keydown", true, true, document.defaultView, false, false, false, false, k, k)
+            else
+                oEvent.initKeyEvent("keydown", true, true, document.defaultView, false, false, false, false, k, 0);
+            console.log oEvent
+            document.dispatchEvent(oEvent)
+            ###
+            #jQuery.event.trigger({ type: 'keydown', which: @KEYMAP[eventName], keyCode: @KEYMAP[eventName], charCode: @KEYMAP[eventName] })
+            #jQuery.event.trigger({ type: 'keyup', which: @KEYMAP[eventName], keyCode: @KEYMAP[eventName], charCode: @KEYMAP[eventName] })
+        return true
+
+    triggerKeyEvent: (element, charCode) ->
+        #We cannot pass object references, so generate an unique selector
+        console.log 'triggerKeyEvent', charCode
+        attribute = 'sn_' + Date.now()
+        element.setAttribute(attribute, '')
+        selector = "#{element.tagName}[#{attribute}]"
+
+        s = document.createElement('script')
+        `s.textContent = '(' + function(charCode, attribute, selector) {
+        // Get reference to element...
+        var element = document.querySelector(selector);
+        element.removeAttribute(attribute);
+
+        // Create KeyboardEvent instance
+        var event = document.createEvent('KeyboardEvent');
+        event.initKeyboardEvent(
+            /* type         */ 'keypress',
+            /* bubbles      */ true,
+            /* cancelable   */ false,
+            /* view         */ window,
+            /* keyIdentifier*/ '',
+            /* keyLocation  */ 0,
+            /* ctrlKey      */ false,
+            /* altKey       */ false,
+            /* shiftKey     */ false,
+            /* metaKey      */ false,
+            /* altGraphKey  */ false
+        );
+        // Define custom values
+        // This part requires the script to be run in the page's context
+        var getterCode = {get: function() {return charCode}};
+        var getterChar = {get: function() {return String.fromCharCode(charCode)}};
+        Object.defineProperties(event, {
+            charCode: getterCode,
+            which: getterChar,
+            keyCode: getterCode, // Not fully correct
+            key: getterChar,     // Not fully correct
+            char: getterChar
+        });
+
+        element.dispatchEvent(event);
+        } + ')(' + charCode + ', "' + attribute + '", "' + selector + '")';
+        (document.head||document.documentElement).appendChild(s);
+        `
+        s.parentNode.removeChild(s)
         return true
 
 gp = new Gamepad
 
 gp.start()
 
-$('body').keyup((e) ->
+document.body.onkeyup = (e) ->
    console.log 'keyup triggered. ', e
-)
+   return true
+
+document.body.onkeydown = (e) ->
+   console.log 'keydown triggered. ', e
+   return true
 
